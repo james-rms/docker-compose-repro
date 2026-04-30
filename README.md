@@ -58,9 +58,11 @@ enabled in `cgroup.subtree_control`, `/sys/fs/cgroup/docker` is created as a
 `io`, or `hugetlb` — forces runc to try to enter `/sys/fs/cgroup/docker`
 "with domain controllers", which is rejected because that cgroup is threaded.
 
-The `docker-compose.yml` from the original report hits this because every
-service sets a `mem_limit`. The first services with `mem_limit` fail on
-startup and compose aborts; which service is reported first can vary by run.
+The `docker-compose.yml` in this repo is the minimal form of the original
+report: a single `alpine` service with `mem_limit: 6m` (the smallest value
+the Docker daemon accepts) is enough to reproduce. The original compose
+file's report nondeterminism about which service fails first is just a
+consequence of every service having a `mem_limit`.
 
 ## Why this host is in a threaded state
 
@@ -101,8 +103,5 @@ In order of preference:
 
 ## Files in this repro
 
-- `docker-compose.yml` — the compose file from the bug report, with the
-  private `us-central1-docker.pkg.dev/foxglove-images/docker-cache/` image
-  prefixes stripped so it can be pulled from Docker Hub. The `keycloak`
-  service (which is gated behind a `playwright` profile and needs a
-  fixtures directory that doesn't exist here) has been removed.
+- `docker-compose.yml` — minimal compose file that triggers the error:
+  one `alpine` service with `mem_limit: 6m`.
