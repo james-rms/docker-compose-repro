@@ -1,27 +1,5 @@
 services:
-  # separate instance for tests; disabling fsync speeds up runs significantly
-  postgres_tests:
-    image: postgres:17.5
-    command: -c fsync=off -c full_page_writes=off -c log_statement="${TESTS_PG_LOG_STATEMENT:-all}" -c log_line_prefix='%m [%p] %d'
-    environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-    ports:
-      - "5437:5432"
-    mem_limit: 4g
-
-  redis:
-    image: redis:6.2
-    command: redis-server --requirepass redis --databases 128
-    ports:
-      - "6380:6379"
-    mem_limit: 256m
-
-  gcs_tests:
-    image: fsouza/fake-gcs-server:1.51.0
-    command: "-scheme=http -public-host=localhost:4447 -port=4447 -backend=memory"
-    volumes:
-      - .objectstore/test:/data
-    ports:
-      - "4447:4447"
-    mem_limit: 512m
+  repro:
+    image: alpine
+    command: "true"
+    mem_limit: 6m
